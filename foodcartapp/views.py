@@ -1,11 +1,13 @@
 import json
 
+import django
 from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import foodcartapp
 from .models import Product
 from restaurateur.models import Order, OrderProductItem
 
@@ -92,6 +94,11 @@ def register_order(request):
     except KeyError:
         content = {'products': 'Обязательное поле.'}
         return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
-
+    except django.db.utils.IntegrityError:
+        content = {'firstname': 'Это поле не может быть пустым.'}
+        return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
+    except foodcartapp.models.Product.DoesNotExist:
+        content = {'firstname, lastname, phonenumber, address: Обязательное поле.'}
+        return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
     return Response(data)
 
