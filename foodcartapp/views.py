@@ -74,14 +74,15 @@ def register_order(request):
         customer_address=data.get('address', ''),
     )
     try:
-        products = data['products']
-        if not products:
+        products_data = data['products']
+
+        if not products_data:
             content = {'products': 'Этот список не может быть пустым.'}
             return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
-        for product in products:
-            product = Product.objects.get(id=product.get('product', ''))
-            for product_quantity in range(product.get('quantity', '')):
-                OrderProductItem.objects.create(
+        for product_data in products_data:
+            product = Product.objects.get(id=product_data.get('product', ''))
+            for product_quantity in range(product_data.get('quantity', '')):
+                order = OrderProductItem.objects.create(
                     order=order,
                     product=product
                 )
