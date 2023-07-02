@@ -82,7 +82,7 @@ def register_order(request):
         for product_data in products_data:
             product = Product.objects.get(id=product_data.get('product', ''))
             for product_quantity in range(product_data.get('quantity', '')):
-                order = OrderProductItem.objects.create(
+                OrderProductItem.objects.create(
                     order=order,
                     product=product
                 )
