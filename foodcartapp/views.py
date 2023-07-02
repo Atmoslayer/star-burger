@@ -1,15 +1,30 @@
-import json
-
-import django
 from django.http import JsonResponse
 from django.templatetags.static import static
-from rest_framework import status
+from rest_framework import serializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
-import foodcartapp
 from .models import Product
 from restaurateur.models import Order, OrderProductItem
+from phonenumber_field.serializerfields import PhoneNumberField
+
+
+class ProductSerializer(Serializer):
+    product = serializers.IntegerField(min_value=1, max_value=Product.objects.latest('id').id)
+    quantity = serializers.IntegerField(min_value=1)
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    firstname = serializers.CharField(source='customer_first_name')
+    lastname = serializers.CharField(source='customer_last_name')
+    address = serializers.CharField(source='customer_address')
+    phonenumber = PhoneNumberField(source='customer_phone_number')
+    products = ProductSerializer(many=True, allow_empty=False)
+
+    class Meta:
+        model = Order
+        fields = ['firstname', 'lastname', 'address', 'phonenumber', 'products']
 
 
 def banners_list_api(request):
@@ -67,18 +82,16 @@ def product_list_api(request):
 @api_view(['GET', 'POST'])
 def register_order(request):
     data = request.data
-    order, created = Order.objects.get_or_create(
-        customer_first_name=data.get('firstname', ''),
-        customer_last_name=data.get('lastname', ''),
-        customer_phone_number=data.get('phonenumber', ''),
-        customer_address=data.get('address', ''),
-    )
-    try:
-        products_data = data['products']
-
-        if not products_data:
-            content = {'products': 'Этот список не может быть пустым.'}
-            return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if data:
+        serializer = CustomerSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        order, created = Order.objects.get_or_create(
+            customer_first_name=data.get('firstname', ''),
+            customer_last_name=data.get('lastname', ''),
+            customer_phone_number=data.get('phonenumber', ''),
+            customer_address=data.get('address', ''),
+        )
+        products_data = data.get('products', '')
         for product_data in products_data:
             product = Product.objects.get(id=product_data.get('product', ''))
             for product_quantity in range(product_data.get('quantity', '')):
@@ -86,20 +99,4 @@ def register_order(request):
                     order=order,
                     product=product
                 )
-    except AttributeError:
-        content = {'products': 'Ожидался list со значениями, но был получен "str". '}
-        return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
-    except TypeError:
-        content = {'products': 'Это поле не может быть пустым.'}
-        return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
-    except KeyError:
-        content = {'products': 'Обязательное поле.'}
-        return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
-    except django.db.utils.IntegrityError:
-        content = {'firstname': 'Это поле не может быть пустым.'}
-        return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
-    except foodcartapp.models.Product.DoesNotExist:
-        content = {'firstname, lastname, phonenumber, address: Обязательное поле.'}
-        return Response(content, status=status.HTTP_406_NOT_ACCEPTABLE)
     return Response(data)
-
