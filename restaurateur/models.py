@@ -38,7 +38,7 @@ class OrderProductItem(models.Model):
     )
     order = models.ForeignKey(
         Order,
-        related_name='order_items',
+        related_name='product_items',
         verbose_name='Заказ',
         on_delete=models.CASCADE,
     )
