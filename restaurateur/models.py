@@ -3,6 +3,11 @@ from phonenumber_field.modelfields import PhoneNumberField
 from foodcartapp.models import Product
 
 
+class OrderQuerySet(models.QuerySet):
+    def fetch_with_sum_count(self):
+        orders = self
+
+
 class Order(models.Model):
     customer_first_name = models.CharField(
         'Имя клиента',
