@@ -99,4 +99,7 @@ def register_order(request):
                     order=order,
                     product=product
                 )
-    return Response(data)
+
+        return Response(serializer.data)
+    else:
+        return Response({})
