@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 from foodcartapp.models import Product
 
@@ -46,6 +47,12 @@ class OrderProductItem(models.Model):
         related_name='product_items',
         verbose_name='Заказ',
         on_delete=models.CASCADE,
+    )
+    products_cost = models.DecimalField(
+        'Стоимость товаров',
+        max_digits=8,
+        decimal_places=2,
+        validators=[MinValueValidator(0)]
     )
 
     def __str__(self):
