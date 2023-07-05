@@ -22,12 +22,23 @@ class Order(models.Model):
     HANDLED_BY_RESTAURANT = 'HR'
     HANDLED_BY_DELIVER = 'HD'
     DELIVERED = 'DD'
+
+    CASH = 'CH'
+    CARD = 'CD'
+    NOT_SELECTED = 'NS'
+
     STATUS_CHOICES = [
         (NOT_HANDLED, 'Не обработан'),
         (HANDLED_BY_MANAGER, 'Обработан менеджером'),
         (HANDLED_BY_RESTAURANT, 'Собран рестораном'),
         (HANDLED_BY_DELIVER, 'Доставляется курьером'),
         (DELIVERED, 'Доставлен')
+    ]
+
+    PAYMENT_CHOICES = [
+        (NOT_SELECTED, 'Не выбрано'),
+        (CASH, 'Наличные'),
+        (CARD, 'Карта')
     ]
 
     status = models.CharField(
@@ -54,6 +65,14 @@ class Order(models.Model):
     )
 
     customer_phone_number = PhoneNumberField('Номер телефона клиента')
+
+    payment_method = models.CharField(
+        'Способ оплаты',
+        max_length=2,
+        choices=PAYMENT_CHOICES,
+        default=NOT_SELECTED,
+        db_index=True
+    )
 
     register_date = models.DateTimeField(
         'Дата и время регистрации заказа',
