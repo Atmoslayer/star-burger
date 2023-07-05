@@ -94,7 +94,6 @@ def register_order(request):
             customer_address=serializer.validated_data['customer_address'],
         )
         products_data = serializer.validated_data['products'],
-        print(0 / 0)
         for product_data in products_data[0]:
             product = Product.objects.get(id=product_data['product'])
             OrderProductItem.objects.create(
