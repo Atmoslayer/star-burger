@@ -15,6 +15,28 @@ class OrderQuerySet(models.QuerySet):
 
 class Order(models.Model):
     objects = OrderQuerySet.as_manager()
+
+    NOT_HANDLED = 'NH'
+    HANDLED_BY_MANAGER = 'HM'
+    HANDLED_BY_RESTAURANT = 'HR'
+    HANDLED_BY_DELIVER = 'HD'
+    DELIVERED = 'DD'
+    STATUS_CHOICES = [
+        (NOT_HANDLED, 'Не обработан'),
+        (HANDLED_BY_MANAGER, 'Обработан менеджером'),
+        (HANDLED_BY_RESTAURANT, 'Собран рестораном'),
+        (HANDLED_BY_DELIVER, 'Доставляется курьером'),
+        (DELIVERED, 'Доставлен')
+    ]
+
+    status = models.CharField(
+        'Статус',
+        max_length=2,
+        choices=STATUS_CHOICES,
+        default=NOT_HANDLED,
+        db_index=True
+    )
+
     customer_first_name = models.CharField(
         'Имя клиента',
         max_length=50,

@@ -102,7 +102,6 @@ def register_order(request):
                 product_cost=product.price,
                 product_quantity=product_data['quantity']
             )
-
         return Response(serializer.data)
     else:
         return Response({})
