@@ -54,6 +54,12 @@ class Order(models.Model):
 
     customer_phone_number = PhoneNumberField('Номер телефона клиента')
 
+    comment = models.TextField(
+        'Комментарий',
+        max_length=300,
+        blank=True
+    )
+
     class Meta:
         verbose_name = 'заказ'
         verbose_name_plural = 'заказы'
