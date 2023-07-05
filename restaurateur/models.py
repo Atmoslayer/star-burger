@@ -1,15 +1,18 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.db.models import Sum
 from phonenumber_field.modelfields import PhoneNumberField
 from foodcartapp.models import Product
 
 
 class OrderQuerySet(models.QuerySet):
-    def fetch_with_sum_count(self):
-        orders = self
+    def fetch_with_order_cost(self):
+        orders = self.annotate(cost=Sum('product_items__products_cost'))
+        return orders
 
 
 class Order(models.Model):
+    objects = OrderQuerySet.as_manager()
     customer_first_name = models.CharField(
         'Имя клиента',
         max_length=50,
