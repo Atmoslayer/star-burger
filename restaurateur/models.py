@@ -1,13 +1,15 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from django.db.models import Sum
+from django.db.models import Sum, F
 from phonenumber_field.modelfields import PhoneNumberField
 from foodcartapp.models import Product
 
 
 class OrderQuerySet(models.QuerySet):
     def fetch_with_order_cost(self):
-        orders = self.annotate(cost=Sum('product_items__products_cost'))
+        orders = self.annotate(
+            cost=Sum(F('product_items__product_cost') * F('product_items__product_quantity'))
+        )
         return orders
 
 
@@ -51,11 +53,15 @@ class OrderProductItem(models.Model):
         verbose_name='Заказ',
         on_delete=models.CASCADE,
     )
-    products_cost = models.DecimalField(
-        'Стоимость товаров',
+    product_cost = models.DecimalField(
+        'Цена продукта',
         max_digits=8,
         decimal_places=2,
         validators=[MinValueValidator(0)]
+    )
+    product_quantity = models.IntegerField(
+        'Количество продуктов',
+        validators=[MinValueValidator(1)]
     )
 
     def __str__(self):
