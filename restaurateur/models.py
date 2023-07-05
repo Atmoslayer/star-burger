@@ -83,12 +83,14 @@ class Order(models.Model):
     call_date = models.DateTimeField(
         'Дата и время звонка',
         null=True,
+        blank=True,
         db_index=True
     )
 
     deliver_date = models.DateTimeField(
         'Дата и время доставки',
         null=True,
+        blank=True,
         db_index=True
     )
 
