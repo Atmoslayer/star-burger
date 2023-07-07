@@ -21,19 +21,36 @@
       <th>Телефон</th>
       <th>Адрес доставки</th>
       <th>Комментарий</th>
+      <th>Рестораны</th>
       <th>Действие</th>
     </tr>
 
     {% for item in order_items %}
       <tr>
         <td>{{item.id}}</td>
-        <td>{{item.get_status_display}}</td>
-        <td>{{item.get_payment_method_display}}</td>
+        <td>{{item.status}}</td>
+        <td>{{item.payment_method}}</td>
         <td>{{item.cost}}₽</td>
         <td>{{item.customer_first_name}} {{item.customer_last_name}}</td>
         <td>{{item.customer_phone_number}}</td>
         <td>{{item.customer_address}}</td>
         <td>{{item.comment}}</td>
+        <td>
+        {% if item.current_restaurant %}
+          Будет приготовлен в ресторане {{item.current_restaurant}}
+        {% elif item.restaurants %}
+          <details>
+            <summary>
+              Может быть приготовлен ресторанами:
+            </summary>
+            {% for restaurant in item.restaurants %}
+              <p>&bull; {{restaurant}}</p>
+            {% endfor %}
+          </details>
+        {% else %}
+          Заказ не может быть собран в одном ресторане
+        {% endif %}
+        </td>
         <td><a href="{% url 'admin:restaurateur_order_change' item.id %}?next={{request.get_full_path|urlencode}}">Редактировать</a></td>
       </tr>
     {% endfor %}

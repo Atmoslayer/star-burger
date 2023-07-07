@@ -1,17 +1,33 @@
 from django.utils import timezone
 from django.db import models
 from django.core.validators import MinValueValidator
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Prefetch
 from phonenumber_field.modelfields import PhoneNumberField
-from foodcartapp.models import Product
+from foodcartapp.models import Product, RestaurantMenuItem, Restaurant
 
 
 class OrderQuerySet(models.QuerySet):
-    def fetch_with_order_cost(self):
-        orders = self.annotate(
-            cost=Sum(F('product_items__product_cost') * F('product_items__product_quantity'))
+
+    def fetch_with_restaurant(self):
+        orders_with_restaurants = self.prefetch_related(
+            Prefetch(
+                'product_items',
+                queryset=OrderProductItem.objects.prefetch_related(Prefetch(
+                    'product',
+                    queryset=Product.objects.prefetch_related(Prefetch(
+                        'menu_items',
+                        queryset=RestaurantMenuItem.objects.filter(availability=True).prefetch_related(
+                            'restaurant'
+                        )
+                    ))
+                ))
+            )
         )
-        return orders
+        return orders_with_restaurants
+
+    def fetch_with_order_cost(self):
+        orders_with_cost = self.annotate(cost=Sum(F('product_items__product_cost') * F('product_items__product_quantity')))
+        return orders_with_cost
 
 
 class Order(models.Model):
@@ -99,6 +115,15 @@ class Order(models.Model):
         max_length=300,
         blank=True,
         db_index=True
+    )
+
+    restaurant = models.ForeignKey(
+        Restaurant,
+        related_name='orders',
+        verbose_name='Ресторан, который готовит заказ',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
 
     class Meta:

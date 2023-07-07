@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django import forms
 from django.shortcuts import redirect, render
 from django.views import View
@@ -8,8 +10,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
 
-from foodcartapp.models import Product, Restaurant
-from restaurateur.models import Order
+from foodcartapp.models import Product, Restaurant, RestaurantMenuItem
+from restaurateur.models import Order, OrderProductItem
 
 
 class Login(forms.Form):
@@ -93,7 +95,44 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    order_items = Order.objects.exclude(status='DD').fetch_with_order_cost()
+    order_items = []
+    orders = Order.objects.exclude(status='DD').fetch_with_restaurant().fetch_with_order_cost().order_by('-status')
+    for order in orders:
+        order_restaurants = []
+        current_restaurant = ''
+        if not order.restaurant:
+            products_restaurants = []
+            product_items = order.product_items.all()
+            for product_item in product_items:
+                product = product_item.product
+                product_restaurants = RestaurantMenuItem.objects.filter(product=product, availability=True)
+                for product_restaurant in product_restaurants:
+                    products_restaurants.append(product_restaurant.restaurant.name)
+            product_quantity = len(product_items)
+            restaurants_counter = Counter(products_restaurants)
+            for restaurant in restaurants_counter.keys():
+                if restaurants_counter[restaurant] == product_quantity:
+                    order_restaurants.append(restaurant)
+        else:
+            current_restaurant = order.restaurant.name
+            order.status = 'HM'
+            order.save()
+        order_items.append(
+            {
+                'id': order.id,
+                'customer_first_name': order.customer_first_name,
+                'customer_last_name': order.customer_last_name,
+                'customer_phone_number': order.customer_phone_number,
+                'customer_address': order.customer_address,
+                'comment': order.comment,
+                'status': order.get_status_display(),
+                'cost': order.cost,
+                'payment_method': order.get_payment_method_display(),
+                'restaurants': order_restaurants,
+                'current_restaurant': current_restaurant
+            }
+        )
+
     return render(request, template_name='order_items.html', context={
         'order_items': order_items,
     })
