@@ -1,5 +1,6 @@
 from collections import Counter
 
+import requests
 from django import forms
 from django.shortcuts import redirect, render
 from django.views import View
@@ -8,10 +9,12 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-
+from requests import HTTPError
+from geopy import distance
 
 from foodcartapp.models import Product, Restaurant, RestaurantMenuItem
-from restaurateur.models import Order, OrderProductItem
+from restaurateur.models import Order
+from star_burger.settings import MAPS_API_KEY
 
 
 class Login(forms.Form):
@@ -93,6 +96,24 @@ def view_restaurants(request):
     })
 
 
+def fetch_coordinates(apikey, address):
+    base_url = "https://geocode-maps.yandex.ru/1.x"
+    response = requests.get(base_url, params={
+        "geocode": address,
+        "apikey": apikey,
+        "format": "json",
+    })
+    response.raise_for_status()
+    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+
+    if not found_places:
+        return None
+
+    most_relevant = found_places[0]
+    lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
+    return lon, lat
+
+
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
     order_items = []
@@ -107,16 +128,32 @@ def view_orders(request):
                 product = product_item.product
                 product_restaurants = RestaurantMenuItem.objects.filter(product=product, availability=True)
                 for product_restaurant in product_restaurants:
-                    products_restaurants.append(product_restaurant.restaurant.name)
+                    products_restaurants.append(product_restaurant.restaurant)
             product_quantity = len(product_items)
             restaurants_counter = Counter(products_restaurants)
             for restaurant in restaurants_counter.keys():
                 if restaurants_counter[restaurant] == product_quantity:
-                    order_restaurants.append(restaurant)
+                    try:
+                        restaurant_coordinates = fetch_coordinates(MAPS_API_KEY, restaurant.address)
+                        order_coordinates = fetch_coordinates(MAPS_API_KEY, order.customer_address)
+                        if restaurant_coordinates and order_coordinates:
+                            order_distance = round(distance.distance(restaurant_coordinates, order_coordinates).km, 2)
+                        else:
+                            order_distance = None
+                        order_restaurants.append(
+                            {
+                                order_distance: restaurant.name,
+                            }
+                        )
+
+                    except HTTPError as http_error:
+                        print(http_error)
+
         else:
             current_restaurant = order.restaurant.name
             order.status = 'HM'
             order.save()
+        # print(sorted_restaurants)
         order_items.append(
             {
                 'id': order.id,
@@ -128,7 +165,7 @@ def view_orders(request):
                 'status': order.get_status_display(),
                 'cost': order.cost,
                 'payment_method': order.get_payment_method_display(),
-                'restaurants': order_restaurants,
+                # 'restaurants': sorted_restaurants,
                 'current_restaurant': current_restaurant
             }
         )

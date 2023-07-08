@@ -44,7 +44,11 @@
               Может быть приготовлен ресторанами:
             </summary>
             {% for restaurant in item.restaurants %}
-              <p>&bull; {{restaurant}}</p>
+              {% if restaurant.distance %}
+                <p>&bull; {{restaurant.name}} - {{restaurant.distance}}</p>
+              {% else %}
+                <p>&bull; {{restaurant.name}} - расстояние не определено</p>
+              {% endif %}
             {% endfor %}
           </details>
         {% else %}
