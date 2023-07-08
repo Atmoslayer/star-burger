@@ -13,6 +13,7 @@ from requests import HTTPError
 from geopy import distance
 
 from foodcartapp.models import Product, Restaurant, RestaurantMenuItem
+from mapmanager.models import MapPoint
 from restaurateur.models import Order
 from star_burger.settings import MAPS_API_KEY
 
@@ -119,7 +120,7 @@ def view_orders(request):
     order_items = []
     orders = Order.objects.exclude(status='DD').fetch_with_restaurant().fetch_with_order_cost().order_by('-status')
     for order in orders:
-        order_restaurants = []
+        order_restaurants = {}
         current_restaurant = ''
         if not order.restaurant:
             products_restaurants = []
@@ -133,27 +134,20 @@ def view_orders(request):
             restaurants_counter = Counter(products_restaurants)
             for restaurant in restaurants_counter.keys():
                 if restaurants_counter[restaurant] == product_quantity:
-                    try:
-                        restaurant_coordinates = fetch_coordinates(MAPS_API_KEY, restaurant.address)
-                        order_coordinates = fetch_coordinates(MAPS_API_KEY, order.customer_address)
-                        if restaurant_coordinates and order_coordinates:
-                            order_distance = round(distance.distance(restaurant_coordinates, order_coordinates).km, 2)
-                        else:
-                            order_distance = None
-                        order_restaurants.append(
-                            {
-                                order_distance: restaurant.name,
-                            }
-                        )
-
-                    except HTTPError as http_error:
-                        print(http_error)
+                    restaurant_location = MapPoint.objects.get(address=restaurant.address)
+                    order_location = MapPoint.objects.get(address=order.customer_address)
+                    if restaurant_location and order_location:
+                        restaurant_coordinates = (restaurant_location.lat, restaurant_location.lon)
+                        order_coordinates = (order_location.lat, order_location.lon)
+                        order_distance = round(distance.distance(restaurant_coordinates, order_coordinates).km, 2)
+                    else:
+                        order_distance = None
+                    order_restaurants[order_distance] = restaurant.name
 
         else:
             current_restaurant = order.restaurant.name
             order.status = 'HM'
             order.save()
-        # print(sorted_restaurants)
         order_items.append(
             {
                 'id': order.id,
@@ -165,7 +159,7 @@ def view_orders(request):
                 'status': order.get_status_display(),
                 'cost': order.cost,
                 'payment_method': order.get_payment_method_display(),
-                # 'restaurants': sorted_restaurants,
+                'restaurants': sorted(order_restaurants.items()),
                 'current_restaurant': current_restaurant
             }
         )

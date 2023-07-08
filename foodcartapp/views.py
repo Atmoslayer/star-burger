@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 
+from mapmanager.management.commands.load_locations import load_locations
 from .models import Product
 from restaurateur.models import Order, OrderProductItem
 from phonenumber_field.serializerfields import PhoneNumberField
@@ -93,6 +94,8 @@ def register_order(request):
             customer_phone_number=serializer.validated_data['customer_phone_number'],
             customer_address=serializer.validated_data['customer_address'],
         )
+        load_locations(order)
+
         products_data = serializer.validated_data['products'],
         for product_data in products_data[0]:
             product = Product.objects.get(id=product_data['product'])
