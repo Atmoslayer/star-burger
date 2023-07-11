@@ -9,13 +9,10 @@ from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
-from requests import HTTPError
 from geopy import distance
 
-from foodcartapp.models import Product, Restaurant, RestaurantMenuItem
+from foodcartapp.models import Product, Restaurant, RestaurantMenuItem, Order
 from mapmanager.models import MapPoint
-from restaurateur.models import Order
-from star_burger.settings import MAPS_API_KEY
 
 
 class Login(forms.Form):

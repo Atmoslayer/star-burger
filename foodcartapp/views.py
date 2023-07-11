@@ -5,8 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from mapmanager.management.commands.load_locations import load_locations
-from .models import Product
-from restaurateur.models import Order, OrderProductItem
+from .models import Product, OrderProductItem
 from .serializers import OrderSerializer
 
 

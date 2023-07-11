@@ -2,8 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import Serializer
 from phonenumber_field.serializerfields import PhoneNumberField
 
-from foodcartapp.models import Product
-from restaurateur.models import Order
+from foodcartapp.models import Product, Order
 
 
 class ProductSerializer(Serializer):

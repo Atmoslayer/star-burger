@@ -55,7 +55,7 @@
           Заказ не может быть собран в одном ресторане
         {% endif %}
         </td>
-        <td><a href="{% url 'admin:restaurateur_order_change' item.id %}?next={{request.get_full_path|urlencode}}">Редактировать</a></td>
+        <td><a href="{% url 'admin:foodcartapp_order_change' item.id %}?next={{request.get_full_path|urlencode}}">Редактировать</a></td>
       </tr>
     {% endfor %}
    </table>
