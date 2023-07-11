@@ -3,7 +3,7 @@ import logging
 import requests
 from django.core.management.base import BaseCommand
 from progress.bar import IncrementalBar
-from requests import HTTPError
+from requests import HTTPError, ConnectTimeout
 
 from foodcartapp.models import Restaurant
 from mapmanager.models import MapPoint
@@ -54,6 +54,8 @@ def load_locations(order=None):
                 bar.next()
     except HTTPError as http_error:
         logging.info(http_error)
+    except ConnectTimeout as connect_error:
+        logging.info(connect_error)
 
 
 class Command(BaseCommand):
