@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from mapmanager.management.commands.load_locations import load_locations
 from .models import Product
 from restaurateur.models import Order, OrderProductItem
-from .serializers import CustomerSerializer
+from .serializers import OrderSerializer
 
 
 def banners_list_api(request):
@@ -67,7 +67,7 @@ def product_list_api(request):
 def register_order(request):
     data = request.data
     if data:
-        serializer = CustomerSerializer(data=data)
+        serializer = OrderSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         order, created = Order.objects.get_or_create(
             customer_first_name=serializer.validated_data['customer_first_name'],

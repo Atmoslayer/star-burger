@@ -11,7 +11,7 @@ class ProductSerializer(Serializer):
     quantity = serializers.IntegerField(min_value=1)
 
 
-class CustomerSerializer(serializers.ModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     firstname = serializers.CharField(source='customer_first_name')
     lastname = serializers.CharField(source='customer_last_name')
     address = serializers.CharField(source='customer_address')
