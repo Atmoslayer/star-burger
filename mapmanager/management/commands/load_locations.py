@@ -1,3 +1,5 @@
+import logging
+
 import requests
 from django.core.management.base import BaseCommand
 from progress.bar import IncrementalBar
@@ -6,6 +8,9 @@ from requests import HTTPError
 from foodcartapp.models import Restaurant
 from mapmanager.models import MapPoint
 from star_burger.settings import MAPS_API_KEY
+
+
+logging.basicConfig(level=logging.INFO)
 
 
 def fetch_coordinates(apikey, address):
@@ -47,8 +52,9 @@ def load_locations(order=None):
                     lon=lon,
                 )
                 bar.next()
-    except HTTPError:
-        pass
+    except HTTPError as http_error:
+        logging.info(http_error)
+
 
 class Command(BaseCommand):
     help = 'Loads locations to DB'
