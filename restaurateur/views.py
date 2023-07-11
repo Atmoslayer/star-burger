@@ -119,7 +119,7 @@ def view_orders(request):
     for order in orders:
         order_restaurants = {}
         current_restaurant = ''
-        if not order.restaurant:
+        if not order.current_restaurant:
             products_restaurants = []
             product_items = order.product_items.all()
             for product_item in product_items:
@@ -142,7 +142,7 @@ def view_orders(request):
                     order_restaurants[order_distance] = restaurant.name
 
         else:
-            current_restaurant = order.restaurant.name
+            current_restaurant = order.current_restaurant.name
             order.status = 'HM'
             order.save()
         order_items.append(
