@@ -8,8 +8,18 @@ class MapPoint(models.Model):
         max_length=100,
         blank=True,
     )
-    lat = models.FloatField(max_length=10, verbose_name='Широта')
-    lon = models.FloatField(max_length=10, verbose_name='Долгота')
+    lat = models.FloatField(
+        max_length=10,
+        verbose_name='Широта',
+        null=True, blank=
+        True
+    )
+    lon = models.FloatField(
+        max_length=10,
+        verbose_name='Долгота',
+        null=True,
+        blank=True
+    )
     call_date = models.DateTimeField(
         'Дата создания записи',
         default=timezone.now,
