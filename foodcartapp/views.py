@@ -69,12 +69,7 @@ def register_order(request):
     if data:
         serializer = OrderSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        order, created = Order.objects.get_or_create(
-            customer_first_name=serializer.validated_data['customer_first_name'],
-            customer_last_name=serializer.validated_data['customer_last_name'],
-            customer_phone_number=serializer.validated_data['customer_phone_number'],
-            customer_address=serializer.validated_data['customer_address'],
-        )
+        order = serializer.create(serializer.validated_data)
         load_locations(order)
 
         products_data = serializer.validated_data['products'],

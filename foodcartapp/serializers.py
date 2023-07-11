@@ -18,6 +18,15 @@ class OrderSerializer(serializers.ModelSerializer):
     phonenumber = PhoneNumberField(source='customer_phone_number')
     products = ProductSerializer(many=True, allow_empty=False)
 
+    def create(self, validated_data):
+        order_object = Order.objects.create(
+            customer_first_name=validated_data['customer_first_name'],
+            customer_last_name=validated_data['customer_last_name'],
+            customer_phone_number=validated_data['customer_phone_number'],
+            customer_address=validated_data['customer_address'],
+        )
+        return order_object
+
     class Meta:
         model = Order
         fields = ['firstname', 'lastname', 'address', 'phonenumber', 'products']
