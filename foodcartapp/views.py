@@ -65,21 +65,18 @@ def product_list_api(request):
 @transaction.atomic
 def register_order(request):
     data = request.data
-    if data:
-        serializer = OrderSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        order = serializer.create(serializer.validated_data)
-        load_locations(order)
+    serializer = OrderSerializer(data=data)
+    serializer.is_valid(raise_exception=True)
+    order = serializer.create(serializer.validated_data)
+    load_locations(order)
 
-        products_data = serializer.validated_data['products'],
-        for product_data in products_data[0]:
-            product = Product.objects.get(id=product_data['product'])
-            OrderProductItem.objects.create(
-                order=order,
-                product=product,
-                product_cost=product.price,
-                product_quantity=product_data['quantity']
-            )
-        return Response(serializer.data)
-    else:
-        return Response({})
+    products_data = serializer.validated_data['products'],
+    for product_data in products_data[0]:
+        product = Product.objects.get(id=product_data['product'])
+        OrderProductItem.objects.create(
+            order=order,
+            product=product,
+            product_cost=product.price,
+            product_quantity=product_data['quantity']
+        )
+    return Response(serializer.data)
