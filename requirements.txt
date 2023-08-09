@@ -9,3 +9,4 @@ progress==1.6
 phonenumbers==8.13.11
 django-phonenumber-field==7.0.0
 gunicorn==21.1.0
+rollbar==0.16.3
