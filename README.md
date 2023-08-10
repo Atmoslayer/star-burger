@@ -53,12 +53,15 @@ python -m venv venv
 ```sh
 pip install -r requirements.txt
 ```
-Получите API токен Яндекса в [кабинете разработчика](https://developer.tech.yandex.ru/services).
-Определите переменную окружения `YANDEX_API_KEY` для полученного ключа.
-Определите переменную окружения `SECRET_KEY`. Создайте файл `.env` в каталоге `star_burger/` и положите туда такой код:
+- Получите API токен Яндекса в [кабинете разработчика](https://developer.tech.yandex.ru/services).
+- Получите API токен Rollbar, зарегистрировавшись и войдя в [личный кабинет](https://rollbar.com).
+- Определите переменную окружения `ROLLBAR_TOKEN` для полученного ключа.
+- Определите переменную окружения `YANDEX_API_KEY` для полученного ключа.
+- Определите переменную окружения `SECRET_KEY`. Создайте файл `.env` в каталоге `star_burger/` и положите туда такой код:
 ```sh
 YANDEX_API_KEY=gkdirks-aappr5hf73hdns9-66hfk
 SECRET_KEY=django-insecure-0if40nf4nf93n4
+ROLLBAR_TOKEN=ghfhsieyt748skamfnsbmldk243
 ```
 
 Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
