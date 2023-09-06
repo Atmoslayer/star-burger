@@ -16,6 +16,7 @@ SECRET_KEY = env('SECRET_KEY')
 MAPS_API_KEY = env('YANDEX_API_KEY')
 DEBUG = env.bool('DEBUG')
 ROLLBAR_TOKEN = env('ROLLBAR_TOKEN')
+DATABASE = env.dj_db_url('DATABASE')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', '127.0.0.1')
 
@@ -93,9 +94,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:////{0}'.format(os.path.join(BASE_DIR, 'db.sqlite3'))
-    )
+    'default': DATABASE
 }
 
 AUTH_PASSWORD_VALIDATORS = [
