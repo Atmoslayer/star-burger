@@ -58,15 +58,15 @@ pip install -r requirements.txt
 - Определите переменную окружения `ROLLBAR_TOKEN` для полученного ключа.
 - Определите переменную окружения `YANDEX_API_KEY` для полученного ключа.
 - При запуске на сервере определите переменную окружения `ALLOWED_HOSTS` и положите туда ip-адрес сервера.
-- Определите переменную окружения `SECRET_KEY`. Создайте файл `.env` в каталоге `star_burger/` и положите туда такой код:
+- Определите переменную `DATABASE` и передайте туда адрес подключения к базе данных согласно [схеме](https://github.com/jazzband/dj-database-url#url-schema). используемой БД
+- Определите переменную окружения `SECRET_KEY`. Создайте файл `.env` в каталоге `star_burger` и положите туда такой код:
 ```sh
 YANDEX_API_KEY=gkdirks-aappr5hf73hdns9-66hfk
 SECRET_KEY=django-insecure-0if40nf4nf93n4
 ROLLBAR_TOKEN=ghfhsieyt748skamfnsbmldk243
+DATABASE=postgres://user:password@127.0.0.1:5432/database
 ```
-
-Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
-
+Запустите миграции следующей командой:
 ```sh
 python manage.py migrate
 ```
