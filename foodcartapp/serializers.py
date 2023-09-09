@@ -1,13 +1,12 @@
 from rest_framework import serializers
-from rest_framework.serializers import Serializer
 from phonenumber_field.serializerfields import PhoneNumberField
 
 from foodcartapp.models import Product, Order, OrderProductItem
 
 
-class ProductSerializer(Serializer):
-    product = serializers.IntegerField(min_value=1, max_value=Product.objects.latest('id').id)
-    quantity = serializers.IntegerField(min_value=1)
+class OrderProductItemSerializer(serializers.ModelSerializer):
+    product = serializers.IntegerField()
+    quantity = serializers.IntegerField()
 
     def create(self, product_data, order):
         product = Product.objects.get(id=product_data['product'])
@@ -20,13 +19,17 @@ class ProductSerializer(Serializer):
 
         return product_item
 
+    class Meta:
+        model = OrderProductItem
+        fields = ['product', 'quantity']
+
 
 class OrderSerializer(serializers.ModelSerializer):
     firstname = serializers.CharField(source='customer_first_name')
     lastname = serializers.CharField(source='customer_last_name')
     address = serializers.CharField(source='customer_address')
     phonenumber = PhoneNumberField(source='customer_phone_number')
-    products = ProductSerializer(many=True, allow_empty=False)
+    products = OrderProductItemSerializer(many=True, allow_empty=False)
 
     def create(self, validated_data):
         order = Order.objects.create(
@@ -36,7 +39,7 @@ class OrderSerializer(serializers.ModelSerializer):
             customer_address=validated_data['customer_address'],
         )
 
-        serializer = ProductSerializer(data=validated_data['products'])
+        serializer = OrderProductItemSerializer(data=validated_data['products'])
         for product_data in validated_data['products']:
             product = serializer.create(product_data, order=order)
         return order
