@@ -69,6 +69,5 @@ def register_order(request):
     serializer.is_valid(raise_exception=True)
     order = serializer.create(serializer.validated_data)
     load_locations(order)
-    print(0/0)
 
     return Response(serializer.data)
