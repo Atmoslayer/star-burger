@@ -12,6 +12,7 @@ __pycache__/
 .Python
 env/
 db.sqlite3/
+data.json/
 .parcel-cache/
 bundles/
 node_modules/
