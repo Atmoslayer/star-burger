@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-stty -echo
 cd /opt/star-burger
 git pull
 source venv/bin/activate
@@ -26,5 +25,4 @@ curl --request POST \
         "rollbar_username": "ddsomdim"
 }
 '
-stty -echo
 echo $'\nSuccessful deployment'
