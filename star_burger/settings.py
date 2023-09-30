@@ -17,6 +17,7 @@ MAPS_API_KEY = env('YANDEX_API_KEY')
 DEBUG = env.bool('DEBUG')
 ROLLBAR_TOKEN = env('ROLLBAR_TOKEN', '')
 DATABASE = env.dj_db_url('DATABASE')
+ENVIRONMENT = env('ENVIRONMENT')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', '127.0.0.1')
 
@@ -48,7 +49,7 @@ MIDDLEWARE = [
 
 ROLLBAR = {
     'access_token': ROLLBAR_TOKEN,
-    'environment': 'development',
+    'environment': ENVIRONMENT,
     'code_version': '1.0',
     'root': BASE_DIR,
 }

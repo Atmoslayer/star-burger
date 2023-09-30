@@ -58,8 +58,9 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 - Получите API токен Яндекса в [кабинете разработчика](https://developer.tech.yandex.ru/services).
-- Получите API токен Rollbar, зарегистрировавшись и войдя в [личный кабинет](https://rollbar.com).
+- Получите API токен Rollbar, зарегистрировавшись и войдя в [личный кабинет](https://rollbar.com) (опционально).
 - Определите переменную окружения `ROLLBAR_TOKEN` для полученного ключа.
+- Определите переменную окружения `ENVIRONMENT` для названия окружения, которое будет отображаться в Rollbar при деплое:
 - Определите переменную окружения `YANDEX_API_KEY` для полученного ключа.
 - При запуске на сервере определите переменную окружения `ALLOWED_HOSTS` и положите туда ip-адрес сервера.
 - Определите переменную `DATABASE` и передайте туда адрес подключения к базе данных согласно [схеме](https://github.com/jazzband/dj-database-url#url-schema). используемой БД
@@ -69,6 +70,7 @@ YANDEX_API_KEY=gkdirks-aappr5hf73hdns9-66hfk
 SECRET_KEY=django-insecure-0if40nf4nf93n4
 ROLLBAR_TOKEN=ghfhsieyt748skamfnsbmldk243
 DATABASE=postgres://user:password@127.0.0.1:5432/database
+ENVIRONMENT=development
 ```
 Запустите миграции следующей командой:
 ```sh
