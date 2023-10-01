@@ -1,6 +1,8 @@
 #!/bin/bash
+usage="$(basename "$0") [-h] -- deploy script for star-burger project.
+where:
+    -h  use ./deploy_star_burger.sh to rin script"
 set -e
-stty -echo
 cd /opt/star-burger
 git pull
 source venv/bin/activate
@@ -26,5 +28,4 @@ curl --request POST \
         "rollbar_username": "ddsomdim"
 }
 '
-stty echo
 echo $'\nSuccessful deployment'
