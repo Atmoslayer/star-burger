@@ -12,7 +12,7 @@ npm ci -dev
 deactivate
 systemctl restart star-burger.service
 commit_version=$(git rev-parse --verify HEAD)
-rollbar_token=$(echo `sed -n 's/^ROLLBAR_TOKEN=\(.*\)/\1/p' < .env`)
+rollbar_token=$(echo `sed -n $ROLLBAR_ACCESS_TOKEN < .env`)
 curl --request POST \
      --url https://api.rollbar.com/api/1/deploy \
      --header "X-Rollbar-Access-Token: $rollbar_token" \
