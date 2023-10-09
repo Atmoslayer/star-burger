@@ -11,8 +11,8 @@ services:
     image: django_service:latest
     container_name: django_service
     volumes:
-      - /opt/star-burger/media/:/opt/star-burger/media/
-      - /opt/star-burger/media/:/opt/star-burger/media/
+      - /opt/star-burger/media/: /opt/star-burger/media/
+      - /opt/star-burger/media/: /opt/star-burger/media/
     env_file:
       - .env
     command: >
