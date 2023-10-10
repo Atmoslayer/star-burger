@@ -13,6 +13,8 @@ services:
     volumes:
       - /opt/star-burger/staticfiles/:/star-burger/media/
       - /opt/star-burger/media/:/star-burger/media/
+    ports:
+      - 8001:8001
     env_file:
       - .env
     command: >
