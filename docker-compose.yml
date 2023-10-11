@@ -42,8 +42,10 @@ services:
     env_file:
       - .env
     depends_on:
-      - frontend
-      - postgres
+      - frontend:
+          condition: service_completed_successfully
+      - postgres:
+          condition: service_completed_successfully
     command: >
       bash -c "./manage.py collectstatic  --noinput &&
       ./manage.py makemigrations --noinput &&
