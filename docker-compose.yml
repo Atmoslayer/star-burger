@@ -7,9 +7,11 @@ services:
 #       - ~/.pg/pg_data/star-burger:/var/lib/postgresql/data
 #     env_file:
 #       -.env
-  django_service:
-    image: django_service:latest
-    container_name: django_service
+  backend:
+    build:
+      dockerfile: Dockerfile.backend
+      context: .
+    container_name: backend
     volumes:
       - /opt/star-burger/staticfiles/:/star-burger/staticfiles/
       - /opt/star-burger/media/:/star-burger/media/
