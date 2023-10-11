@@ -18,4 +18,4 @@ services:
     env_file:
       - .env
     command: >
-      bash -c "./manage.py collectstatic --noinput && ./manage.py migrate && gunicorn -w 5 -b 127.0.0.1:8081 star_burger.wsgi:application"
+      bash -c "gunicorn -w 5 -b 0.0.0.0:8081 star_burger.wsgi:application"
