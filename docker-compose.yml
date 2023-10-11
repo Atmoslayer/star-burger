@@ -45,7 +45,7 @@ services:
       - frontend:
           condition: service_completed_successfully
       - postgres:
-          condition: service_completed_successfully
+          condition: service_healthy
     command: >
       bash -c "./manage.py collectstatic  --noinput &&
       ./manage.py makemigrations --noinput &&
