@@ -1,14 +1,19 @@
 version: "3.3"
+
+
 services:
   postgres:
     image: postgres:14.9
     container_name: postgres
     volumes:
-      - /var/lib/postgresql/14/main:/var/lib/postgresql/14/main
+      - /var/lib/postgresql/14/main:/var/lib/postgresql/data/pgdata
     ports:
       - 5432:5432
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DATA: /var/lib/postgresql/data/pgdata
 
 
   frontend:
