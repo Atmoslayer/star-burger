@@ -3,19 +3,17 @@ set -e
 cd /opt/star-burger
 git pull
 source venv/bin/activate
-pip install -r requirements.txt
+source .env
+python manage.py collectstatic  --noinput
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 python manage.py load_locations
-npm ci -dev
-./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 deactivate
-systemctl restart star-burger.service
+docker-compose up
 commit_version=$(git rev-parse --verify HEAD)
-rollbar_token=$(echo `sed -n 's/^ROLLBAR_TOKEN=\(.*\)/\1/p' < .env`)
 curl --request POST \
      --url https://api.rollbar.com/api/1/deploy \
-     --header "X-Rollbar-Access-Token: $rollbar_token" \
+     --header "X-Rollbar-Access-Token: $ROLLBAR_TOKEN" \
      --header 'accept: application/json' \
      --header 'content-type: application/json' \
      --data '
