@@ -6,14 +6,14 @@ services:
     image: postgres:14.9
     container_name: postgres
     volumes:
-      - /var/lib/postgresql/14/main:/var/lib/postgresql/data/pgdata
+      - /var/lib/postgresql/14/main:/var/lib/postgresql/14/main
     ports:
       - 5432:5432
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DATA: /var/lib/postgresql/14/main
 
 
   frontend:
