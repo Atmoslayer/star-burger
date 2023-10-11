@@ -16,7 +16,7 @@ services:
     volumes:
       - /opt/star-burger/staticfiles/:/star-burger/staticfiles/
     ports:
-      -1234:1234
+      - 1234:1234
     command: >
       bash -c "./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./""
 
@@ -33,7 +33,7 @@ services:
     env_file:
       - .env
     depends_on:
-      -frontend
+      - frontend
     command: >
       bash -c "gunicorn -w 5 -b 0.0.0.0:8081 star_burger.wsgi:application"
 
