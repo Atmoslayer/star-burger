@@ -1,7 +1,5 @@
 import os
 
-import dj_database_url
-
 from environs import Env
 
 
@@ -16,8 +14,13 @@ SECRET_KEY = env('SECRET_KEY')
 MAPS_API_KEY = env('YANDEX_API_KEY')
 DEBUG = env.bool('DEBUG')
 ROLLBAR_TOKEN = env('ROLLBAR_TOKEN', '')
-DATABASE = env.dj_db_url('DATABASE')
+DATABASE_NAME = env('DATABASE_NAME')
+DATABASE_USER = env('DATABASE_USER')
+DATABASE_PASSWORD = env('DATABASE_PASSWORD')
+DATABASE_HOST = env('DATABASE_HOST')
+DATABASE_PORT = env('DATABASE_PORT')
 ENVIRONMENT = env('ENVIRONMENT')
+
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', '127.0.0.1')
 
@@ -95,7 +98,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DATABASES = {
-    'default': DATABASE
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
