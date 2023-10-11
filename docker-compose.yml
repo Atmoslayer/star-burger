@@ -1,12 +1,15 @@
 version: "3.3"
 services:
-#   postgres:
-#     image: postgres:15
-#     container_name: postgres
-#     volumes:
-#       - ~/.pg/pg_data/star-burger:/var/lib/postgresql/data
-#     env_file:
-#       -.env
+  postgres:
+    image: postgres:14.9
+    container_name: postgres
+    volumes:
+      - /var/lib/postgresql/14/main:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    env_file:
+      -.env
+
 
   frontend:
     build:
@@ -19,6 +22,7 @@ services:
       - 1234:1234
     command: >
       bash -c "./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./""
+
 
   backend:
     build:
@@ -34,6 +38,7 @@ services:
       - .env
     depends_on:
       - frontend
+      - postgres
     command: >
       bash -c "gunicorn -w 5 -b 0.0.0.0:8081 star_burger.wsgi:application"
 
