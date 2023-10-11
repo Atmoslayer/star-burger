@@ -1,15 +1,10 @@
 #!/bin/bash
 set -e
 cd /opt/star-burger
+docker-compose down
 git pull
-source venv/bin/activate
 source .env
-python manage.py collectstatic  --noinput
-python manage.py makemigrations --noinput
-python manage.py migrate --noinput
-python manage.py load_locations
-deactivate
-docker-compose restart
+docker-compose up
 commit_version=$(git rev-parse --verify HEAD)
 curl --request POST \
      --url https://api.rollbar.com/api/1/deploy \
