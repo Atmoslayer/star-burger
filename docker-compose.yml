@@ -40,8 +40,4 @@ services:
       postgres:
           condition: service_started
     command: >
-      bash -c "./manage.py collectstatic  --noinput &&
-      ./manage.py makemigrations --noinput &&
-      ./manage.py migrate --noinput &&
-      ./manage.py load_locations &&
-      gunicorn -w 5 -b 0.0.0.0:8081 star_burger.wsgi:application"
+      bash -c "gunicorn -w 5 -b 0.0.0.0:8081 star_burger.wsgi:application"
