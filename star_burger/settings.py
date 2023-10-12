@@ -1,7 +1,5 @@
 import os
 
-import dj_database_url
-
 from environs import Env
 
 
@@ -16,7 +14,11 @@ SECRET_KEY = env('SECRET_KEY')
 MAPS_API_KEY = env('YANDEX_API_KEY')
 DEBUG = env.bool('DEBUG')
 ROLLBAR_TOKEN = env('ROLLBAR_TOKEN', '')
-DATABASE = env.dj_db_url('DATABASE')
+POSTGRES_PASSWORD = env('POSTGRES_PASSWORD')
+POSTGRES_HOST = env('POSTGRES_HOST')
+POSTGRES_PORT = env('POSTGRES_PORT')
+POSTGRES_USER = env('POSTGRES_USER')
+POSTGRES_DB = env('POSTGRES_DB')
 ENVIRONMENT = env('ENVIRONMENT')
 
 
@@ -96,7 +98,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DATABASES = {
-    'default': DATABASE
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': POSTGRES_DB,
+        'USER': POSTGRES_USER,
+        'PASSWORD': POSTGRES_PASSWORD,
+        'HOST': POSTGRES_HOST,
+        'PORT': POSTGRES_PORT,
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
