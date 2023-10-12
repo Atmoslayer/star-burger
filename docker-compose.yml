@@ -3,6 +3,7 @@ services:
   postgres:
     image: postgres:14.9
     container_name: postgres
+    restart: always
     volumes:
       - /var/lib/postgresql/14/main:/var/lib/postgresql/14/main
     ports:
@@ -27,6 +28,7 @@ services:
       dockerfile: Dockerfile.backend
       context: .
     container_name: backend
+    restart: always
     volumes:
       - /opt/star-burger/staticfiles/:/star-burger/staticfiles/
       - /opt/star-burger/media/:/star-burger/media/
