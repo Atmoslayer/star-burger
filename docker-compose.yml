@@ -41,5 +41,7 @@ services:
           condition: service_completed_successfully
       postgres:
           condition: service_started
+    entrypoint:
+      deploy-entrypoint.sh
     command: >
       bash -c "gunicorn -w 5 -b 0.0.0.0:8081 star_burger.wsgi:application"

@@ -4,7 +4,9 @@ cd /opt/star-burger
 docker-compose down
 git pull
 source .env
-docker-compose up
+docker-compose pull
+docker-compose up --build --entrypoint -d
+
 commit_version=$(git rev-parse --verify HEAD)
 curl --request POST \
      --url https://api.rollbar.com/api/1/deploy \
