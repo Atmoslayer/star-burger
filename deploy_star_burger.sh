@@ -4,8 +4,8 @@ cd /opt/star-burger
 docker-compose down
 git pull
 source .env
-docker-compose pull
-docker-compose up --build --entrypoint -d
+docker-compose up --build -d
+docker-compose run --entrypoint
 
 commit_version=$(git rev-parse --verify HEAD)
 curl --request POST \
