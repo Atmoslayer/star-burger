@@ -1,12 +1,11 @@
 #!/bin/bash
 set -e
 cd /opt/star-burger
+source .env
 docker-compose down
 git pull
-source .env
 docker-compose up --build -d
-docker-compose run --entrypoint
-
+docker-compose exec backend python manage.py migrate --noinput python manage.py collectstatic --noinput python manage.py load_locations
 commit_version=$(git rev-parse --verify HEAD)
 curl --request POST \
      --url https://api.rollbar.com/api/1/deploy \
