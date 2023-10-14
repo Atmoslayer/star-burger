@@ -2,8 +2,8 @@
 set -e
 cd /opt/star-burger
 source .env
-docker-compose down
 git pull
+docker-compose down
 docker-compose up --build -d
 docker-compose exec backend python manage.py migrate --noinput
 docker-compose exec backend python manage.py collectstatic --noinput
