@@ -4,3 +4,9 @@ README
 venv
 .idea
 __pycache__
+docker-compose.yml
+Dockerfile.backend
+Dockerfile.frontend
+deploy_star_burger.sh
+db.sqlite3
+data.json
