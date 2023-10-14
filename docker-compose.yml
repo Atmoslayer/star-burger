@@ -5,7 +5,7 @@ services:
     container_name: postgres
     restart: always
     volumes:
-      - /var/lib/postgresql/14/main:/var/lib/postgresql/14/main
+      - ${PGDATA}:${PGDATA}
     ports:
       - 5432:5432
     env_file:
