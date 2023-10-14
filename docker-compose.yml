@@ -2,7 +2,7 @@ version: "3.3"
 services:
   postgres:
     image: postgres:14.9
-    container_name: postgres
+    container_name: ${POSTGRES_HOST}
     restart: always
     volumes:
       - ${PGDATA}:${PGDATA}
